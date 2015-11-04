@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<!-- Set meta properties -->
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Forms Practice</title>
+		
+		<!-- Libraries -->
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		
+		<!-- Angular -->
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+
+		<!-- Firebase -->
+		<script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+
+		<!-- AngularFire -->
+		<script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
+		
+		<!-- Scripts -->
+		<link href="css/main.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="js/main.js"></script>
+
+	</head>
+	<body>
+		<header><h3>Angular Form Practice</h3></header>
+		
+		<!-- Instructions -->
+		<div class="container" id="instructions">
+			<b>Instructions</b>
+			<ol>		
+				<li>Initiate your angular application <code>myApp</code> on the <code>&ltdiv&gt</code> element that encapsulates your form. Make sure to specify your controller as <code>myCtrl</code></li>	
+
+				<li>Give the <code>&ltform&gt</code> element a <code>name</code> property and set it to "myForm"</li>
+
+				<li>Add a property <code>novalidate</code> to the <code>&ltform&gt</code> element (we'll do our own validation)</li>
+
+				<li>Give your <strong>Name</strong> input a <code>name</code> property and set it equal to "username" so it can be referenced.</li>				
+				
+				<li>Let's add some form requirements: use <code>ng-minlength="SOME-NUMBER"</code> to set a minimum length of 6 for the <code>username</code> input.</li>
+
+				<li>Add this <code>&ltp&gt</code> element to serve as a warning if the username input's length is too short
+					<pre><code>&ltp ng-show="myForm.username.$error.minlength" class="help-block"&gtUsername is too short.&lt/p&gt</code></pre>
+				</li>
+
+				<li>Using a similar approach, include an error message for your <code>email</code>  input if it does not have a valid email (hint: there is an <code>email</code> property to the <code>$error</code> variable.</li>
+
+				<li>Using the <code>ng-disabled</code> directive, disable the submit button if the form is invalid (hint: <code>FORMNAME.$invalid</code> is a boolean value of the form's validity)</li>
+				
+				<li>Add a conditional class "has-error" to each <code>div</code> with class <code>form-group</code> field if your field is has been touched and is invalid.  Hint:
+					<pre>ng-class="{'DESIRED_CLASS' : EXPRESSION TO BE EVALUATED}"</pre></li>
+
+				<li>Add an <code>ng-click</code> directive to the submit button that executes the <code>submit</code> function from your JS code.</li>
+			</ol>
+		</div>
+
+
+
+
+		<!-- Form: initiate your app and controller here -->
+		<div class="container" ng-app="myApp" ng-controller="myCtrl">
+			<form name="myForm" novalidate>
+			
+				<!-- username -->
+				<div class="form-group" ng-class="{'has-error' : myForm.username.$touched && myForm.username.$invalid}">
+					<label>Name:</label>
+					<input name="username" ng-minlength="6" class="form-control" ng-required="true" ng-model="user.username" required>		
+					<p ng-show="myForm.username.$error.minlength" class="help-block">Username is too short.</p>
+				</div>			
+
+				<!-- Email -->
+				<div class="form-group" ng-class="{'has-error' : myForm.email.$touched && myForm.email.$invalid}">
+					<label>Email:</label>
+					<input  name="email" type="email" class="form-control" ng-required="true" ng-model="email" required></input>      <p ng-show="myForm.email.$error.email" class="help-block">Must input valid email.</p>					
+				</div>
+
+				<!-- Password -->
+				<div class="form-group" ng-class="{'has-error' : myForm.password.$touched && myForm.password.$invalid}">
+					<label>Password:</label>
+					<input  name="password" type="password" class="form-control" ng-required="true" ng-model="password" required></input>      
+					<p ng-show="myForm.password.$error" class="help-block">Must input valid password.</p>					
+				</div>
+				<!-- Submit button -->
+				<div class="form-group">
+					<button ng-click="signUp()" ng-disabled="myForm.$invalid" type="submit" class="btn btn-primary">Submit</button>      
+				</div>
+
+			</form>
+
+			<!-- Show data properly entered in the form -->
+			<pre>This is the entered form data = {{user | json}}</pre>
+			<pre>Myform's email errors = {{myForm.email.$error | json}}</pre>
+		</div>
+	</body>
+</html>

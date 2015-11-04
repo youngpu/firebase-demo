@@ -1,0 +1,19 @@
+#instructions {
+	background:#E3E3E3;
+	border-radius:5px;
+	padding:10px;
+	max-height:300px;
+	overflow:auto;
+	margin-bottom:30px;
+}
+
+li {
+	padding-bottom:10px;
+	margin-bottom:10px;
+	margin-top:10px;
+	border-bottom:1px solid #d3d3d3;
+}
+
+header {
+	text-align: center;
+}
