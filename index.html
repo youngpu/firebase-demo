@@ -5,11 +5,12 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Forms Practice</title>
+		<title>Firebase Demo</title>
 		
-		<!-- Libraries -->
+		<!-- Styles -->
 		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
 		<!-- Angular -->
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
 
@@ -24,74 +25,122 @@
 		<script type="text/javascript" src="js/main.js"></script>
 
 	</head>
-	<body>
-		<header><h3>Angular Form Practice</h3></header>
+
+	<!-- Initiate app and controller on body -->
+	<body ng-app="myApp" ng-controller="myCtrl">
+
+		<!-- Header with logout button -->
+		<header>
+			<span class="fa fa-twitter fa-2x"></span>
+			<div class="log-out" ng-show="userId">
+				<span>{{users[userId].handle}}</span>
+				<button ng-click="logOut()" class="btn btn-warning">Logout</button>
+			</div>
+		</header>	
 		
-		<!-- Instructions -->
-		<div class="container" id="instructions">
-			<b>Instructions</b>
-			<ol>		
-				<li>Initiate your angular application <code>myApp</code> on the <code>&ltdiv&gt</code> element that encapsulates your form. Make sure to specify your controller as <code>myCtrl</code></li>	
-
-				<li>Give the <code>&ltform&gt</code> element a <code>name</code> property and set it to "myForm"</li>
-
-				<li>Add a property <code>novalidate</code> to the <code>&ltform&gt</code> element (we'll do our own validation)</li>
-
-				<li>Give your <strong>Name</strong> input a <code>name</code> property and set it equal to "username" so it can be referenced.</li>				
-				
-				<li>Let's add some form requirements: use <code>ng-minlength="SOME-NUMBER"</code> to set a minimum length of 6 for the <code>username</code> input.</li>
-
-				<li>Add this <code>&ltp&gt</code> element to serve as a warning if the username input's length is too short
-					<pre><code>&ltp ng-show="myForm.username.$error.minlength" class="help-block"&gtUsername is too short.&lt/p&gt</code></pre>
-				</li>
-
-				<li>Using a similar approach, include an error message for your <code>email</code>  input if it does not have a valid email (hint: there is an <code>email</code> property to the <code>$error</code> variable.</li>
-
-				<li>Using the <code>ng-disabled</code> directive, disable the submit button if the form is invalid (hint: <code>FORMNAME.$invalid</code> is a boolean value of the form's validity)</li>
-				
-				<li>Add a conditional class "has-error" to each <code>div</code> with class <code>form-group</code> field if your field is has been touched and is invalid.  Hint:
-					<pre>ng-class="{'DESIRED_CLASS' : EXPRESSION TO BE EVALUATED}"</pre></li>
-
-				<li>Add an <code>ng-click</code> directive to the submit button that executes the <code>submit</code> function from your JS code.</li>
-			</ol>
-		</div>
-
-
-
-
-		<!-- Form: initiate your app and controller here -->
-		<div class="container" ng-app="myApp" ng-controller="myCtrl">
-			<form name="myForm" novalidate>
+		<!-- Container div -->
+		<div class="container">
 			
-				<!-- username -->
-				<div class="form-group" ng-class="{'has-error' : myForm.username.$touched && myForm.username.$invalid}">
-					<label>Name:</label>
-					<input name="username" ng-minlength="6" class="form-control" ng-required="true" ng-model="user.username" required>		
-					<p ng-show="myForm.username.$error.minlength" class="help-block">Username is too short.</p>
-				</div>			
+			<!-- Form for signing-in or signing-up -->
+			<form ng-show="!userId" name="myForm" novalidate>
+			
+				<!-- Bind model "handle" to this input, set minimum length, and make it required -->
+				<div class="form-group">
+					<label>Handle:</label>
+					<input name="handle" ng-minlength="6" class="form-control" ng-model="handle"required >	
+					
+					<!-- Add an error message if the length is too short -->	
+					<p ng-show="myForm.handle.$error.minlength" class="help-block">Handle is too short.</p>
+				</div>	
 
-				<!-- Email -->
-				<div class="form-group" ng-class="{'has-error' : myForm.email.$touched && myForm.email.$invalid}">
+				<!-- Input for image URL -->
+				<div class="form-group">
+					<label>Image URL:</label>
+					<img ng-src="{{userImage}}">							
+					<input name="img" class="form-control" ng-model="userImage">
+				</div>
+
+				<!-- Bind model "email" to this input and make it required -->
+				<div class="form-group">
 					<label>Email:</label>
-					<input  name="email" type="email" class="form-control" ng-required="true" ng-model="email" required></input>      <p ng-show="myForm.email.$error.email" class="help-block">Must input valid email.</p>					
+					<input  name="email" type="email" class="form-control" ng-required="true" ng-model="email" required></input>
+
+					<!-- Add an error message if the email is not valid -->	
+					<p ng-show="myForm.email.$error.email" class="help-block">Must input valid email.</p>					
 				</div>
 
 				<!-- Password -->
-				<div class="form-group" ng-class="{'has-error' : myForm.password.$touched && myForm.password.$invalid}">
-					<label>Password:</label>
-					<input  name="password" type="password" class="form-control" ng-required="true" ng-model="password" required></input>      
-					<p ng-show="myForm.password.$error" class="help-block">Must input valid password.</p>					
-				</div>
-				<!-- Submit button -->
 				<div class="form-group">
-					<button ng-click="signUp()" ng-disabled="myForm.$invalid" type="submit" class="btn btn-primary">Submit</button>      
+					<label>Password:</label>
+					<input  name="password" type="password" class="form-control" ng-model="password" required></input>      
+				</div>
+
+				<!-- Submit buttons: should only be active if certain inputs are valid -->
+				<div class="form-group">
+					<button ng-click="signUp()" ng-disabled="myForm.$invalid" type="submit" class="btn btn-primary">Sign-up</button> 
+					<button ng-click="signIn()" ng-disabled="myForm.email.$invalid || myForm.password.$invalid" type="submit" class="btn btn-primary">Sign-in</button>
 				</div>
 
 			</form>
 
-			<!-- Show data properly entered in the form -->
-			<pre>This is the entered form data = {{user | json}}</pre>
-			<pre>Myform's email errors = {{myForm.email.$error | json}}</pre>
+			<!-- Show tweets (if userId is defined) -->
+			<div ng-show="userId">
+
+				<!-- Element for writing tweets -->
+				<div class="tweet-box write-tweet">
+					<div>
+						<!-- Show image of current user -->
+						<img class="image" ng-src="{{users[userId].userImage}}"></img>
+
+						<!-- Form for writing tweets -->
+						<form name="tweet-input" id="tweet-input">
+
+							<!-- Bind model newTweet to a textarea element.
+								set a maximum length of 140 characters -->					
+							<textarea placeholder="What's Happening..." ng-model="newTweet" name="text" class="form-control" requred ng-maxlength="140"></textarea>
+							
+							<!-- Tweet button -->
+							<div class="form-group send-tweet">
+
+								<!-- Execute the tweet function when clicked -->
+								<button ng-click="tweet()" ng-disabled="tweet.$invalid" type="submit" class="btn btn-primary">
+									<i class="fa fa-pencil-square-o"></i> Tweet
+								</button> 					
+							</div>
+						</form>
+					</div>
+				</div>
+				
+				<!-- Show everyone's tweets! -->
+				<div>
+
+					<!-- Repeat a div with class "tweet-box" for each element in your tweets array -->
+					<div class="tweet-box" ng-repeat="tweet in tweets | orderBy : '-time'">
+						<div>
+							<!-- Put an img tag that shows the userImage of that tweet -->
+							<img class="image" ng-src="{{users[tweet.userId].userImage}}"></img>
+							
+							<!-- Put in the twitter handle and time of tweet -->
+							<span class="handle">{{users[tweet.userId].handle}}</span>
+							<span class="time">{{tweet.time | date:'MM/dd/yy h:mma'}}</span>
+						</div>
+
+						<!-- Put in the text of the tweet -->
+						<div class="tweet">
+							{{tweet.text}}
+						</div>
+
+						<!-- Create a section for showing tweet likes -->
+						<div class="likes">
+							<!-- Show a heart icon that, when clicked, 
+								passes your tweet to your "like" function -->
+							<i ng-click="like(tweet)" class="fa fa-heart"></i>
+							<!-- Show your total number of likes -->
+							<span>{{tweet.likes}}</span>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>
